@@ -1,0 +1,50 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Your website | Send a file with IPFS</title><meta name=description content><meta name=image content><meta itemprop=name content="Send a file with IPFS"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="Send a file with IPFS"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="Send a file with IPFS"><meta name=og:description content><meta name=og:url content=/ipfs-transfer/><meta name=og:site_name content="Send a file with IPFS"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content=coding><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><img src="https://analytics.schollz.com/1.png?page=%2fipfs-transfer%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><div id=loadingMask style=width:100%;height:100%;position:fixed;background:#fff></div><script>function fadeOut(el){el.style.opacity=1;var last=+new Date();var tick=function(){el.style.opacity=+el.style.opacity-(new Date()-last)/80;last=+new Date();if(el.style.opacity>0){(window.requestAnimationFrame&&requestAnimationFrame(tick))||setTimeout(tick,16);}else{el.style.display='none';}};tick();}
+function ready(fn){if(document.attachEvent?document.readyState==="complete":document.readyState!=="loading"){el=document.getElementById('loadingMask');fadeOut(el);var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});}else{document.addEventListener('DOMContentLoaded',fn);}
+guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+window.onload=ready;</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>Send a file with IPFS</h1><div class=posttitle><small>October 15, 2017</small></div></div><div class=wikitext><p>Sending a file with IPFS is fun (after all it is leveraging the peer-to-peer network and content-addressable blocks of data!) and easy.<h2 id=install-ipfs>Install IPFS</h2><p>Here is the basic instructions to install:<pre><code>wget https://dist.ipfs.io/go-ipfs/v0.4.11/go-ipfs_v0.4.11_linux-amd64.tar.gz
+tar -xvzf go-ipfs*
+cd go-ipfs
+sudo ./install.sh
+ipfs init
+ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/9001
+ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
+</code></pre><p>The last two lines are useful for listening on LAN connected devices. The port <code>0.0.0.0</code> will let run the IPFS daemon on a different computer but still use the peer-to-peer portal from that computer.<p>Then start the daemon with<pre><code>ipfs daemon
+</code></pre><p>You could also start the daemon with an init script.<sup class=footnote-ref id=fnref:1><a href=#fn:1>1</a></sup><h2 id=load-the-file-into-ipfs>Load the file into IPFS</h2><p>Then add the file to IPFS. When you add the file to IPFS it copy the file to your IPFS repo (usually <code>~/.ipfs</code>) and it will not touch the original file.<pre><code>$ ipfs add somefile
+added QmSr1saoM3n1Sx8dBs5bz7ozU somefile
+</code></pre><h2 id=send-it>Send it!</h2><p>Then tell your friend to download file using the IPFS hash from the output:<pre><code>wget https://ipfs.io/ipfs/QmSr1saoM3n1Sx8dBs5bz7ozU
+</code></pre><p>This link does <em>not require</em> the user to have IPFS. It uses the public gateway, <code>https://ipfs.io/ipfs/</code>, which lookup peers from their main IPFS servers.<h2 id=cleanup-optional>Cleanup (optional)</h2><p>Once your friend has the file, then you can remove the file from being hosted on IPFS (if you want). Even though you&rsquo;ll still have the file in the original location, it will no longer be served from your IPFS daemon.<pre><code>ipfs pin rm QmSr1saoM3n1Sx8dBs5bz7ozU
+ipfs repo gc
+</code></pre><p><em>Note:</em> after deletion your content may still be stored in the IPFS Gateway cache for some time (not sure how long).<div class=footnotes><hr><ol><li id=fn:1>I made an init script here: <a href=https://gist.github.com/schollz/da71aa2a5a43d76739ef034331c7b0bb>https://gist.github.com/schollz/da71aa2a5a43d76739ef034331c7b0bb</a>
+<a class=footnote-return href=#fnref:1><sup>[return]</sup></a></ol></div></div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);</script></div><br></div><small>Written on <a href=/written/2017-10-15>15</a>
+<a href=/written/2017-10>October</a>
+<a href=/written/2017>2017</a>.
+Categories:
+<a href=/tags/coding/>coding</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/sentences/>Most sentences are unique</a>&nbsp;</table><td width=50% style="padding-left:.5em;border-left:1px dotted"><table><tr><td><a href=/sending-a-file/ style=float:right>Sending a file in 2017</a><td>&raquo;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/language>language</a>&nbsp;
+<a href=/tags/open-source>open-source</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP></p><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>

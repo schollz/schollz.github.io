@@ -1,0 +1,81 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Your website | Shallow `go get`</title><meta name=description content><meta name=image content><meta itemprop=name content="Shallow `go get`"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="Shallow `go get`"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="Shallow `go get`"><meta name=og:description content><meta name=og:url content=/shallow-go-get/><meta name=og:site_name content="Shallow `go get`"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content=coding><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><img src="https://analytics.schollz.com/1.png?page=%2fshallow-go-get%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><div id=loadingMask style=width:100%;height:100%;position:fixed;background:#fff></div><script>function fadeOut(el){el.style.opacity=1;var last=+new Date();var tick=function(){el.style.opacity=+el.style.opacity-(new Date()-last)/80;last=+new Date();if(el.style.opacity>0){(window.requestAnimationFrame&&requestAnimationFrame(tick))||setTimeout(tick,16);}else{el.style.display='none';}};tick();}
+function ready(fn){if(document.attachEvent?document.readyState==="complete":document.readyState!=="loading"){el=document.getElementById('loadingMask');fadeOut(el);var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});}else{document.addEventListener('DOMContentLoaded',fn);}
+guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+window.onload=ready;</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>Shallow `go get`</h1><div class=posttitle><small>May 6, 2018</small></div></div><div class=wikitext><p>This is a little hack to use shallow clones for new git checkouts with <code>go get</code>. Unfortunately for Gophers, <a href=https://github.com/golang/go/issues/13078>this has been an open issue for three years counting</a> without a workable solution aside from patching the go toolchain yourself. This solution utilizes a <em>git</em> wrapper that determines if a pull/clone is happening and then makes sure it is shallow.<p>The wrapper is only a few lines of code, here&rsquo;s the <code>main.go</code>:<div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+
+<span style=color:#f92672>import</span> (
+    <span style=color:#e6db74>&#34;os&#34;</span>
+    <span style=color:#e6db74>&#34;os/exec&#34;</span>
+)
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+    <span style=color:#a6e22e>args</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Args</span>
+    <span style=color:#66d9ef>if</span> len(<span style=color:#a6e22e>args</span>) &gt; <span style=color:#ae81ff>1</span> {
+        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;pull&#34;</span> {
+            <span style=color:#a6e22e>args</span> = append(<span style=color:#a6e22e>args</span>[:<span style=color:#ae81ff>2</span>], append([]<span style=color:#66d9ef>string</span>{<span style=color:#e6db74>&#34;--depth=1&#34;</span>}, <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>2</span>:]<span style=color:#f92672>...</span>)<span style=color:#f92672>...</span>)
+        } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;clone&#34;</span> {
+            <span style=color:#a6e22e>args</span> = append(<span style=color:#a6e22e>args</span>[:<span style=color:#ae81ff>2</span>], append([]<span style=color:#66d9ef>string</span>{<span style=color:#e6db74>&#34;--depth=1&#34;</span>, <span style=color:#e6db74>&#34;--shallow-submodules&#34;</span>, <span style=color:#e6db74>&#34;--single-branch&#34;</span>}, <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>2</span>:]<span style=color:#f92672>...</span>)<span style=color:#f92672>...</span>)
+        }
+    }
+    <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>0</span>] = <span style=color:#e6db74>&#34;/usr/bin/git&#34;</span>
+    <span style=color:#a6e22e>cmd</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>exec</span>.<span style=color:#a6e22e>Command</span>(<span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>0</span>])
+    <span style=color:#66d9ef>if</span> len(<span style=color:#a6e22e>args</span>) &gt; <span style=color:#ae81ff>0</span> {
+        <span style=color:#a6e22e>cmd</span> = <span style=color:#a6e22e>exec</span>.<span style=color:#a6e22e>Command</span>(<span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>0</span>], <span style=color:#a6e22e>args</span>[<span style=color:#ae81ff>1</span>:]<span style=color:#f92672>...</span>)
+    }
+    <span style=color:#a6e22e>cmd</span>.<span style=color:#a6e22e>Stdout</span> = <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Stdout</span>
+    <span style=color:#a6e22e>cmd</span>.<span style=color:#a6e22e>Stderr</span> = <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Stderr</span>
+    <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>cmd</span>.<span style=color:#a6e22e>Run</span>()
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+        <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Exit</span>(<span style=color:#ae81ff>1</span>)
+    }
+}</code></pre></div><p>To make it easy, I&rsquo;ve saved this code as <code>main.go</code> in a repo named <code>git</code> (<a href=https://github.com/schollz/git>schollz/git</a>). The repo is named &ldquo;<code>git</code>&rdquo; on purpose so that your GOPATH can be prepended to the PATH and then the wrapper can be substituted for the real <code>git</code> (<code>/usr/bin/git</code>). So then, to activate shallow cloning all you have to do is:<pre><code>$ go get github.com/schollz/git
+$ export PATH=$GOPATH/bin:$PATH
+</code></pre><p>which you can add to your <code>.bashrc</code> files if you want it to be permanent. This way, the wrapper will aways be used and the wrapper will force cloning to be shallow.<h2 id=benchmarks>Benchmarks</h2><p>Here&rsquo;s a benchmark showing a 50% reduction in disk usage and thus a 50% reduction in time taken for a <code>go get</code>. You&rsquo;ll not get that much for smaller repositories, but its not bad.<h3 id=normal-go-get>normal <code>go get</code></h3><pre><code>% docker run -it golang:1.10 /bin/bash
+root@d9208178f1fa:/go# time go get github.com/juju/juju/...
+real    7m35.631s
+user    1m40.059s
+sys     0m45.436s
+root@d9208178f1fa:/go# du -sh .
+1.1G
+</code></pre><h3 id=shallow-go-get>shallow <code>go get</code></h3><pre><code>% docker run -it golang:1.10 /bin/bash
+root@68135fb64a3e:/go# go get github.com/schollz/git
+root@68135fb64a3e:/go# export PATH=$GOPATH/bin:$PATH
+root@68135fb64a3e:/go# time go get github.com/juju/juju/...
+real    3m0.335s
+user    0m29.192s
+sys     0m17.253s
+root@d9208178f1fa:/go# du -sh .
+499M    .
+</code></pre><h2 id=acknowledgements>Acknowledgements</h2><p>Thanks <a href=https://github.com/tscholl2>tscholl2</a> for the idea.</div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);</script></div><br></div><small>Written on <a href=/written/2018-05-06>6</a>
+<a href=/written/2018-05>May</a>
+<a href=/written/2018>2018</a>.
+Categories:
+<a href=/tags/coding/>coding</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/hackers-and-painters/>Painters &amp; Hackers</a>&nbsp;</table><td width=50% style="padding-left:.5em;border-left:1px dotted"><table><tr><td><a href=/hugocraft/ style=float:right>Hugo Craft</a><td>&raquo;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/language>language</a>&nbsp;
+<a href=/tags/open-source>open-source</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP></p><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>

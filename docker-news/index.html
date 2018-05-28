@@ -1,0 +1,51 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Your website | Read news in the terminal with Docker</title><meta name=description content><meta name=image content><meta itemprop=name content="Read news in the terminal with Docker"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="Read news in the terminal with Docker"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="Read news in the terminal with Docker"><meta name=og:description content><meta name=og:url content=/docker-news/><meta name=og:site_name content="Read news in the terminal with Docker"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content=coding><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><img src="https://analytics.schollz.com/1.png?page=%2fdocker-news%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><div id=loadingMask style=width:100%;height:100%;position:fixed;background:#fff></div><script>function fadeOut(el){el.style.opacity=1;var last=+new Date();var tick=function(){el.style.opacity=+el.style.opacity-(new Date()-last)/80;last=+new Date();if(el.style.opacity>0){(window.requestAnimationFrame&&requestAnimationFrame(tick))||setTimeout(tick,16);}else{el.style.display='none';}};tick();}
+function ready(fn){if(document.attachEvent?document.readyState==="complete":document.readyState!=="loading"){el=document.getElementById('loadingMask');fadeOut(el);var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});}else{document.addEventListener('DOMContentLoaded',fn);}
+guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+window.onload=ready;</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>Read news in the terminal with Docker</h1><div class=posttitle><small>October 5, 2017</small></div></div><div class=wikitext><p>I&rsquo;ve been working on <em>readable</em>, a simple bookmarklet for easily reading articles in the browser (<a href=https://github.com/schollz/readable>Github</a>). As part of this, I made a Docker image that utilizes <a href=https://github.com/mozilla/readability>Mozilla&rsquo;s <em>readability</em> package</a>.<p>You can easily use the Docker image to directly read articles from the command line.<p>First pull it.<pre><code>$ docker pull schollz/readable
+</code></pre><p>Then set a URL that contains a news article:<div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ URL<span style=color:#f92672>=</span>http://www.cnn.com/2017/10/03/world/nobel-physics-prize-2017/index.html</code></pre></div><p>Then read!<div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ docker run --rm -t schollz/readable $URL | more
+
+----------------------------------------------------------
+Nobel Prize in Physics goes to <span style=color:#e6db74>&#39;black hole telescope&#39;</span> trio
+----------------------------------------------------------
+
+Story highlights
+
+-   The development proves Einstein<span style=color:#960050;background-color:#1e0010>&#39;</span>s prediction of gravitational waves
+-   More than <span style=color:#ae81ff>1</span>,000 people worked on the technology over four decades
+
+<span style=color:#f92672>(</span>CNN<span style=color:#f92672>)</span>The <span style=color:#ae81ff>2017</span> Nobel Prize in Physics has been awarded to Rainer Weiss,
+Barry C. Barish and Kip S. Thorne <span style=color:#66d9ef>for</span> their detection of gravitational
+waves, a development scientists believe could give vital clues to the
+origins of the universe.</code></pre></div></div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);</script></div><br></div><small>Written on <a href=/written/2017-10-05>5</a>
+<a href=/written/2017-10>October</a>
+<a href=/written/2017>2017</a>.
+Categories:
+<a href=/tags/coding/>coding</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/captioning-images/>Automatic captioning of images using Javascript</a>&nbsp;</table><td width=50% style="padding-left:.5em;border-left:1px dotted"><table><tr><td><a href=/crawdad/ style=float:right>Using crawdad</a><td>&raquo;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/language>language</a>&nbsp;
+<a href=/tags/open-source>open-source</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP></p><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>

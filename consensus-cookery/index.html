@@ -1,0 +1,142 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Your website | Consensus cookery</title><meta name=description content><meta name=image content><meta itemprop=name content="Consensus cookery"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="Consensus cookery"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="Consensus cookery"><meta name=og:description content><meta name=og:url content=/consensus-cookery/><meta name=og:site_name content="Consensus cookery"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content="coding food"><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><img src="https://analytics.schollz.com/1.png?page=%2fconsensus-cookery%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><div id=loadingMask style=width:100%;height:100%;position:fixed;background:#fff></div><script>function fadeOut(el){el.style.opacity=1;var last=+new Date();var tick=function(){el.style.opacity=+el.style.opacity-(new Date()-last)/80;last=+new Date();if(el.style.opacity>0){(window.requestAnimationFrame&&requestAnimationFrame(tick))||setTimeout(tick,16);}else{el.style.display='none';}};tick();}
+function ready(fn){if(document.attachEvent?document.readyState==="complete":document.readyState!=="loading"){el=document.getElementById('loadingMask');fadeOut(el);var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});}else{document.addEventListener('DOMContentLoaded',fn);}
+guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+window.onload=ready;</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>Consensus cookery</h1><div class=posttitle><small>March 20, 2018</small></div></div><div class=wikitext><p>Sometimes when I want a recipe to cook something new I will find several recipes for the same thing and try to use them as a guide to generate an average or &ldquo;consensus&rdquo; recipe. This code should make it easy to generate consensus recipes (useful!) and also show variation between recipes (interesting!).<p>Finding a consensus recipe requires first clustering many recipes. This is because a single recipe (<em>e.g.</em> a recipe for brownies) might have many significant variations (<em>e.g.</em> brownies can have just cocoa, just chocolate, or both). This code will first cluster recipes and then use the clusters to deliver the consensus recipe.<h2 id=example>Example</h2><p>The <em>quick-and-dirty</em> implementation goes like this:<ol><li>Choose a recipe (<em>e.g.</em> brownies, crepes, pancakes).<li>Search using duckduckgo.com to find hundreds of corresponding recipes (<code>fetch_urls.js</code>).<li>Download all the recipes and use <code>pandoc</code> to convert to text for processing.<li>Use a really simple (read: <em>bad</em>) context-extractor to grab ingredients.<li>Cluster the recipes based on the presence of ingredients.<li>Take the median values for ingredients in a given cluster to create an average recipe.</ol><p>The context-extractor works by finding the most likely &ldquo;ingredient&rdquo; section in the web page and then trying to parse those ingredients using a greedy search from a list of likely ingredients (<code>top_5k.txt</code>). Its not a great implementation. However, the errors in it are pretty random, which means you can get okay results as long as you have ~hundreds of recipes.<p>The median values are used, rather than the mean, so its less susceptible to bad parsing of the quantity. Again, as long as the parser is okay, it should be accurate enough.<p>Here&rsquo;s some examples of running the code (check out the code <a href=https://github.com/schollz/consensus-cookery>on Github</a>).<h3 id=brownies>Brownies</h3><p>As mentioned, brownies are sometimes made with cocoa, sometimes chocolate, and sometimes both. Interestingly the machine learning automatically detects this.<p>Here&rsquo;s the biggest &ldquo;brownie&rdquo; cluster which shows ingredients for a consensus recipe made with chocolate (made up of 44 recipes). The <code>Rel. Freq.</code> corresponds to the percentage of recipes that contain that ingredient.<pre><code>cluster 0 (n=44)
++------------+-------------+------------+
+| Ingredient |    Amount   | Rel. Freq. |
++------------+-------------+------------+
+|   butter   |  4 1/2 tbsp |     98     |
+| chocolate  |  4 1/2 tbsp |     93     |
+|    eggs    | 1 5/8 whole |     93     |
+|   flour    |  6 3/4 tbsp |     80     |
+|    salt    |   1/4 tsp   |     50     |
+|   sugar    |   3/4 cup   |     91     |
+|  vanilla   |   1/2 tsp   |     70     |
++------------+-------------+------------+
+</code></pre><p>The next biggest cluster shows ingredients for a brownie recipe that is made with cocoa powder. (Also it uses baking powder unlike the previous recipe).<pre><code>cluster 11 (n=28)
++---------------+------------+------------+
+|   Ingredient  |   Amount   | Rel. Freq. |
++---------------+------------+------------+
+| baking powder |  1/4 tsp   |     86     |
+|     cocoa     | 3 1/4 tbsp |     71     |
+|      eggs     | 1.0 whole  |     57     |
+|     flour     |  5.0 tbsp  |     93     |
+|      salt     |  1/4 tsp   |     79     |
+|     sugar     | 7 1/4 tbsp |     93     |
+|    vanilla    |  1/4 tsp   |     68     |
++---------------+------------+------------+
+</code></pre><p>The third biggest cluster shows ingredients for a brownie recipe that uses both chocolate <em>and</em> cocoa.<pre><code>cluster 4 (n=28)
++-------------+-------------+------------+
+|  Ingredient |    Amount   | Rel. Freq. |
++-------------+-------------+------------+
+| brown sugar |   6.0 tbsp  |    100     |
+|    butter   |  6 3/4 tbsp |    100     |
+|  chocolate  |  6 1/2 tbsp |     89     |
+|    cocoa    |  5 3/4 tbsp |     54     |
+|     eggs    | 1 7/8 whole |    104     |
+|    flour    |   1/2 cup   |     89     |
+|     salt    |   3/8 tsp   |     86     |
+|    sugar    |   1/2 cup   |    100     |
+|   vanilla   |   3/8 tsp   |    100     |
++-------------+-------------+------------+
+</code></pre><p>You may notice that the proportions are odd (<code>1 7/8 eggs</code>!) which is because the program tries to normalize the recipes to a specified volume, and then converts them back to the median volume in all the recipe cluster.<h3 id=pancakes>Pancakes</h3><p>The machine learning clustering highlights the major difference between pancakes - whether they are buttermilk or not. These are the first two biggest clusters, where the first one has milk and the second uses buttermilk.<pre><code>cluster 15 (n=33)
++---------------+-------------+------------+
+|   Ingredient  |    Amount   | Rel. Freq. |
++---------------+-------------+------------+
+| baking powder |   1/8 tsp   |    100     |
+|     butter    |   1/2 tsp   |    103     |
+|      eggs     | 1 1/4 whole |     97     |
+|     flour     |  1 1/4 cup  |    100     |
+|      milk     |  1 1/8 cup  |     94     |
+|      salt     |   1/2 tsp   |     94     |
+|     sugar     |  1 1/2 tsp  |    100     |
++---------------+-------------+------------+
+</code></pre><pre><code>cluster 14 (n=29)
++---------------+-------------+------------+
+|   Ingredient  |    Amount   | Rel. Freq. |
++---------------+-------------+------------+
+| baking powder |   5/8 tsp   |    100     |
+|  baking soda  |   1/2 tsp   |     97     |
+|     butter    |   1/2 tsp   |    100     |
+|   buttermilk  |  1 1/4 cup  |     97     |
+|      eggs     | 1 1/8 whole |     97     |
+|     flour     |  1 1/8 cup  |    100     |
+|      salt     |   3/8 tsp   |     90     |
+|     sugar     |  1 1/4 tsp  |    103     |
+|    vanilla    |   5/8 tsp   |     41     |
++---------------+-------------+------------+
+</code></pre><h3 id=homemade-noodles>Homemade noodles</h3><p>The machine learning clustering picks up on an important distinction within noodle making - whether to use semolina <em>or</em> flour.<pre><code>cluster 18 (n=24)
++------------+-------------+------------+
+| Ingredient |    Amount   | Rel. Freq. |
++------------+-------------+------------+
+|    eggs    | 2 1/2 whole |     83     |
+|   flour    |  2 3/8 cup  |    129     |
+|    salt    |   5/8 tsp   |     75     |
+|   water    |  6 3/8 tbsp |    100     |
++------------+-------------+------------+
+</code></pre><pre><code>cluster 14 (n=16)
++------------+------------+------------+
+| Ingredient |   Amount   | Rel. Freq. |
++------------+------------+------------+
+|    eggs    | 2.0 whole  |    112     |
+|   flour    | 1 3/8 cup  |    119     |
+| olive oil  | 2 7/8 tsp  |     94     |
+|    salt    |  5/8 tsp   |     75     |
+|  semolina  |  1.0 cup   |     31     |
+|   water    | 3 7/8 tbsp |     75     |
++------------+------------+------------+
+</code></pre><h3 id=hamburger>Hamburger</h3><p>Here&rsquo;s a funny thing. If you are not too specific about the recipe you want, you might get clusters of truly different recipes. Consider the hamburger.<p>The biggest cluster for hamburger is obviously a list of ingredients for a hamburger recipe albeit the proportions are off (you can just multiple the amounts by some factor).<pre><code>+----------------------+------------+------------+
+|      Ingredient      |   Amount   | Rel. Freq. |
++----------------------+------------+------------+
+|         beef         | 3 5/8 tbsp |     87     |
+|         eggs         | 3/8 whole  |     33     |
+|        garlic        | 6 1/2 tbsp |     77     |
+|        onion         | 4 1/8 tbsp |     50     |
+|         salt         |  1/4 tsp   |     40     |
+| worcestershire sauce |  1.0 tsp   |     47     |
++----------------------+------------+------------+
+</code></pre><p>Interestingly, one of the next biggest clusters is not a hamburger - it has no meat in it! Looking at it closer though it is obviously a hamburger <em>bun</em> recipe, which the machine learning clustering automatically detected. Lol.<pre><code>+------------+-----------+------------+
+| Ingredient |   Amount  | Rel. Freq. |
++------------+-----------+------------+
+|   butter   |  1.0 tsp  |     53     |
+|    eggs    | 7/8 whole |     79     |
+|   flour    | 2 3/8 cup |     95     |
+|    milk    |  3/4 cup  |     37     |
+|    salt    |  7/8 tsp  |     74     |
+|   sugar    | 3 1/8 tsp |     95     |
+|   water    |  5/8 cup  |     79     |
+|   yeast    |  5/8 tsp  |     79     |
++------------+-----------+------------+
+</code></pre><h1 id=try-it>Try it</h1><p>Check it out on Github to <a href=https://github.com/schollz/consensus-cookery/blob/master/README.md#try-it>try it yourself</a>.</div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);</script></div><br></div><small>Written on <a href=/written/2018-03-20>20</a>
+<a href=/written/2018-03>March</a>
+<a href=/written/2018>2018</a>.
+Categories:
+<a href=/tags/coding/>coding</a>, <a href=/tags/food/>food</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/find3/>FIND3</a>&nbsp;</table><td width=50% style="padding-left:.5em;border-left:1px dotted"><table><tr><td><a href=/average-cookies/ style=float:right>Average chocolate chip cookies</a><td>&raquo;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/language>language</a>&nbsp;
+<a href=/tags/open-source>open-source</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP></p><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>
