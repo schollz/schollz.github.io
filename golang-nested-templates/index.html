@@ -1,0 +1,76 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Zack&#39;s Notablog | How to easily make nested templates (Go)</title><meta name=description content><meta name=image content><meta itemprop=name content="How to easily make nested templates (Go)"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="How to easily make nested templates (Go)"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="How to easily make nested templates (Go)"><meta name=og:description content><meta name=og:url content=/golang-nested-templates/><meta name=og:site_name content="How to easily make nested templates (Go)"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content="coding golang"><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><img src="https://analytics.schollz.com/1.png?page=%2fgolang-nested-templates%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><script>var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>How to easily make nested templates (Go)</h1><div class=posttitle><small>November 10, 2017</small></div></div><div class=wikitext><p><a href=https://play.golang.org/p/OVkruYsBVV>https://play.golang.org/p/OVkruYsBVV</a><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+
+<span style=color:#f92672>import</span> (
+    <span style=color:#e6db74>&#34;bytes&#34;</span>
+    <span style=color:#e6db74>&#34;fmt&#34;</span>
+    <span style=color:#e6db74>&#34;log&#34;</span>
+    <span style=color:#e6db74>&#34;text/template&#34;</span>
+)
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>View</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>Title</span>   <span style=color:#66d9ef>string</span>
+    <span style=color:#a6e22e>Content</span> <span style=color:#66d9ef>string</span>
+}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+
+    <span style=color:#a6e22e>header</span> <span style=color:#f92672>:=</span> <span style=color:#e6db74>`
+</span><span style=color:#e6db74></span><span style=color:#75715e>{{</span><span style=color:#a6e22e>define</span> <span style=color:#e6db74>&#34;header&#34;</span><span style=color:#75715e>}}</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>     &lt;head&gt;
+</span><span style=color:#e6db74>         &lt;title&gt;</span><span style=color:#75715e>{{</span> <span style=color:#a6e22e>$.Title</span> <span style=color:#75715e>}}</span><span style=color:#e6db74>&lt;/title&gt;
+</span><span style=color:#e6db74>     &lt;/head&gt;
+</span><span style=color:#e6db74></span><span style=color:#75715e>{{</span><span style=color:#66d9ef>end</span><span style=color:#75715e>}}</span><span style=color:#e6db74>`</span>
+
+    <span style=color:#a6e22e>page</span> <span style=color:#f92672>:=</span> <span style=color:#e6db74>`
+</span><span style=color:#e6db74>This line should not show
+</span><span style=color:#e6db74></span><span style=color:#75715e>{{</span><span style=color:#a6e22e>define</span> <span style=color:#e6db74>&#34;indexPage&#34;</span><span style=color:#75715e>}}</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>    &lt;html&gt;
+</span><span style=color:#e6db74>    </span><span style=color:#75715e>{{</span><span style=color:#66d9ef>template</span> <span style=color:#e6db74>&#34;header&#34;</span> <span style=color:#a6e22e>.</span><span style=color:#75715e>}}</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>    &lt;body&gt;
+</span><span style=color:#e6db74>        &lt;h1&gt;</span><span style=color:#75715e>{{</span> <span style=color:#a6e22e>.Content</span> <span style=color:#75715e>}}</span><span style=color:#e6db74>&lt;/h1&gt;
+</span><span style=color:#e6db74>    &lt;/body&gt;
+</span><span style=color:#e6db74>    &lt;/html&gt;
+</span><span style=color:#e6db74></span><span style=color:#75715e>{{</span><span style=color:#66d9ef>end</span><span style=color:#75715e>}}</span><span style=color:#e6db74>`</span>
+
+    <span style=color:#a6e22e>view</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>View</span>{<span style=color:#a6e22e>Title</span>: <span style=color:#e6db74>&#34;some title&#34;</span>, <span style=color:#a6e22e>Content</span>: <span style=color:#e6db74>&#34;some content&#34;</span>} <span style=color:#75715e>// Here we try to set which page to view as content
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>t</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>template</span>.<span style=color:#a6e22e>New</span>(<span style=color:#e6db74>&#34;basic&#34;</span>)
+    <span style=color:#a6e22e>t</span> = <span style=color:#a6e22e>template</span>.<span style=color:#a6e22e>Must</span>(<span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>Parse</span>(<span style=color:#a6e22e>header</span>))
+    <span style=color:#a6e22e>t</span> = <span style=color:#a6e22e>template</span>.<span style=color:#a6e22e>Must</span>(<span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>Parse</span>(<span style=color:#a6e22e>page</span>))
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>tpl</span> <span style=color:#a6e22e>bytes</span>.<span style=color:#a6e22e>Buffer</span>
+    <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>t</span>.<span style=color:#a6e22e>ExecuteTemplate</span>(<span style=color:#f92672>&amp;</span><span style=color:#a6e22e>tpl</span>, <span style=color:#e6db74>&#34;indexPage&#34;</span>, <span style=color:#a6e22e>view</span>)
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+        <span style=color:#a6e22e>log</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;executing template:&#34;</span>, <span style=color:#a6e22e>err</span>)
+    }
+    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>tpl</span>.<span style=color:#a6e22e>String</span>())
+}</code></pre></div></div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+
+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);</script></div><br></div><small>Written on <a href=/written/2017-11-10>10</a>
+<a href=/written/2017-11>November</a>
+<a href=/written/2017>2017</a>.
+Categories:
+<a href=/tags/coding/>coding</a>, <a href=/tags/golang/>golang</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/odd-one-out/>Odd one out</a>&nbsp;</table><td width=50% style="padding-left:.5em;border-left:1px dotted"><table><tr><td><a href=/painting-primitives/ style=float:right>Painting from computer-generated primitives</a><td>&raquo;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>
