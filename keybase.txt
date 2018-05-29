@@ -1,0 +1,55 @@
+==================================================================
+https://keybase.io/schollz
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://schollz.github.io
+  * I am schollz (https://keybase.io/schollz) on keybase.
+  * I have a public key ASDIADN7oxL8_sTpxvECMfdZBluzSJSMZAivkTv8AInEBQo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "012038d4f1b66a7f68f1dd94bc48b2abd0d0fcbbeaa9ae463411d77850430703e8f40a",
+      "host": "keybase.io",
+      "kid": "0120c800337ba312fcfec4e9c6f10231f759065bb348948c6408af913bfc0089c4050a",
+      "uid": "7c39cf6ebd80f029369ea81c3b1e3719",
+      "username": "schollz"
+    },
+    "merkle_root": {
+      "ctime": 1507144281,
+      "hash": "6abcfe247af80e9c657c22e3871b6333b97c9947fb518d0156b7aff1fd4948cf4063a9a19f5a7ecc9713740b022eab7a6d3482874e7c8e9c690c0794a51dd2a0",
+      "hash_meta": "acbbc310e9886523799b5f60793fbd02e38e5df554b66d52e418a8ddafe475be",
+      "seqno": 1497790
+    },
+    "service": {
+      "hostname": "schollz.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.33"
+  },
+  "ctime": 1507144292,
+  "expire_in": 504576000,
+  "prev": "5859681c4503b10cabec96f9d14fa20e96b4759f408bcec7ff64c2e7d567b70a",
+  "seqno": 11,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgyAAze6MS/P7E6cbxAjH3WQZbs0iUjGQIr5E7/ACJxAUKp3BheWxvYWTFA0l7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTIwMzhkNGYxYjY2YTdmNjhmMWRkOTRiYzQ4YjJhYmQwZDBmY2JiZWFhOWFlNDYzNDExZDc3ODUwNDMwNzAzZThmNDBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwYzgwMDMzN2JhMzEyZmNmZWM0ZTljNmYxMDIzMWY3NTkwNjViYjM0ODk0OGM2NDA4YWY5MTNiZmMwMDg5YzQwNTBhIiwidWlkIjoiN2MzOWNmNmViZDgwZjAyOTM2OWVhODFjM2IxZTM3MTkiLCJ1c2VybmFtZSI6InNjaG9sbHoifSwibWVya2xlX3Jvb3QiOnsiY3RpbWUiOjE1MDcxNDQyODEsImhhc2giOiI2YWJjZmUyNDdhZjgwZTljNjU3YzIyZTM4NzFiNjMzM2I5N2M5OTQ3ZmI1MThkMDE1NmI3YWZmMWZkNDk0OGNmNDA2M2E5YTE5ZjVhN2VjYzk3MTM3NDBiMDIyZWFiN2E2ZDM0ODI4NzRlN2M4ZTljNjkwYzA3OTRhNTFkZDJhMCIsImhhc2hfbWV0YSI6ImFjYmJjMzEwZTk4ODY1MjM3OTliNWY2MDc5M2ZiZDAyZTM4ZTVkZjU1NGI2NmQ1MmU0MThhOGRkYWZlNDc1YmUiLCJzZXFubyI6MTQ5Nzc5MH0sInNlcnZpY2UiOnsiaG9zdG5hbWUiOiJzY2hvbGx6LmdpdGh1Yi5pbyIsInByb3RvY29sIjoiaHR0cHM6In0sInR5cGUiOiJ3ZWJfc2VydmljZV9iaW5kaW5nIiwidmVyc2lvbiI6MX0sImNsaWVudCI6eyJuYW1lIjoia2V5YmFzZS5pbyBnbyBjbGllbnQiLCJ2ZXJzaW9uIjoiMS4wLjMzIn0sImN0aW1lIjoxNTA3MTQ0MjkyLCJleHBpcmVfaW4iOjUwNDU3NjAwMCwicHJldiI6IjU4NTk2ODFjNDUwM2IxMGNhYmVjOTZmOWQxNGZhMjBlOTZiNDc1OWY0MDhiY2VjN2ZmNjRjMmU3ZDU2N2I3MGEiLCJzZXFubyI6MTEsInRhZyI6InNpZ25hdHVyZSJ9o3NpZ8RA3pXs8cfEw6F6WtKmAuQlAmEKOpEE+SDqvnbx0DMvZSReWAQazSgdGmbe7TTf6J1mmmNM9CqidmA2zIiahFsHAKhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIMHn15nyMblEo3hCbPAPSsBmTpAkKhLdzzUwgUojBUCzo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/schollz
+
+==================================================================
