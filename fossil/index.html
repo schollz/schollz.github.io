@@ -1,0 +1,52 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Zack&#39;s Notablog | Self-hosting with fossil, an alternative to git</title><meta name=description content><meta name=image content><meta itemprop=name content="Self-hosting with fossil, an alternative to git"><meta itemprop=description content><meta itemprop=image content><meta name=twitter:card content=summary><meta name=twitter:title content="Self-hosting with fossil, an alternative to git"><meta name=twitter:description content><meta name=twitter:site content=@yakczar><meta name=twitter:creator content=@yakczar><meta name=twitter:image:src content><meta name=og:title content="Self-hosting with fossil, an alternative to git"><meta name=og:description content><meta name=og:url content=/fossil/><meta name=og:site_name content="Self-hosting with fossil, an alternative to git"><meta name=og:type content=article><meta name=article:author content=yakczar><meta name=article:tag content=coding><link rel=stylesheet href=/css/style4.css><script src=/js/caption.js></script><link rel=icon type=image/png href=/img/favicon/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/img/favicon/favicon-16x16.png sizes=16x16><script>function getJSON(url){var script=document.createElement('script');script.setAttribute('src',url);script.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(script);}
+function cbfunc(data1){console.log(data1);var quoteP=document.getElementById("quoteP");quoteP.innerHTML="<em>“"+data1.text+"” - "+data1.name+"</em>";}
+getJSON("https:\/\/randomquote.schollz.com?callback=cbfunc")</script><img src="https://analytics.schollz.com/1.png?page=%2ffossil%2f" width=1px height=1px style=float:right><div id=header><div class=left></div><div class=right></div></div><script>var elements=document.querySelectorAll("img");Array.prototype.forEach.call(elements,function(el,i){if(el.getAttribute("alt")){const caption=document.createElement('figcaption');var node=document.createTextNode(el.getAttribute("alt"));caption.appendChild(node);const wrapper=document.createElement('figure');wrapper.className='image';el.parentNode.insertBefore(wrapper,el);el.parentNode.removeChild(el);wrapper.appendChild(el);wrapper.appendChild(caption);}});</script><div id=documentbody><div class=wtblog><div class=maintext><div class="wikitext titlehack"><h1>Self-hosting with fossil, an alternative to git</h1><div class=posttitle><small>June 10, 2018</small></div></div><div class=wikitext><p>Github, Gitlab, Bitbucket are all web interfaces for <em>git</em>. They all do similar things that add on features that aren&rsquo;t implicit in <em>git</em>, like issues and wiki, etc.<p>Unbeknownst to some, <em>fossil</em> is an alternative to <em>git</em> that actually has built-in issues, wiki, and easily self-hosts. This is a quickstart to get started with hosting and cloning <em>fossil</em> repos.<h2 id=before-you-begin>Before you begin</h2><p>First, download fossil. There are already binaries available for <em>fossil</em>, you can find them <a href=https://www.fossil-scm.org/xfer/uv/download.html>here</a>.<h2 id=new>New fossil</h2><p>Make sure to save each fossil repo with the extension <code>.fossil</code> - this is very important if you want to do hosting.<p>Now you can make a new fossil with the <code>init</code> subcommand.<pre><code>&gt; fossil init -A schollz 3.fossil
+</code></pre><p>This will make a new repository with the default user <code>schollz</code>. You can then change the default password for <code>schollz</code>. Here you have to enter the password on the command-line, but I like to add it to a file to prevent it from showing up in the bash history.<pre><code>&gt; vim pass # enter your password in this file
+&gt; fossil user password schollz `cat pass` -R 3.fossil
+&gt; rm pass # this ensures your password doesn't enter the bash history
+</code></pre><h2 id=hosting>Hosting fossils</h2><p>Say now you have several fossils in the same folder. Make sure that each has the <code>.fossil</code> suffix - this is very important.<pre><code>&gt; ls fossils
+1.fossil 2.fossil 3.fossil
+</code></pre><p>Then you can start a server that uses HTTPS with<pre><code>&gt; fossil server . --https --port 8079 --repolist
+</code></pre><p>If you are using Caddy as a reverse-proxy (which easily adds HTTPS), your Caddyfile will look like:<pre><code>fossil.schollz.com {
+        proxy / 127.0.0.1:8079 {
+                transparent
+        }
+        gzip
+        log logs/fossil.schollz.com.log
+}
+</code></pre><h2 id=cloning>Cloning fossil</h2><p>Cloning is easy, just make sure to include your user name. If you are using &ldquo;<code>fossil server .</code>&rdquo; like above, then you need to add <code>/repo</code> to tell it you want to clone <code>repo.fossil</code>.<pre><code>fossil clone https://schollz@fossil.schollz.com/3 3.fossil
+</code></pre><p>You will be prompted for the password, which is the same password that you set up top. Now you can open the repo.<pre><code>&gt; fossil open 3.fossil
+</code></pre><p>Things are then pretty similar to <em>git</em>.<pre><code>&gt; touch README.md
+&gt; fossil add README.md
+&gt; fossil commit README.md
+</code></pre><h2 id=general>General</h2><p>I like to have the <code>README.md</code> in the main repo be the default documentation. To do this, make a <code>README.md</code> file and then goto Admin -&gt; Configuration and look for the <strong>Index Page</strong> and change it to <code>/doc/tip/README.md</code>. Make sure to then press &ldquo;Apply Changes&rdquo; at the top.</div><br><div class=collapse tabindex=1><a id=commenttoggle href=#commentssection onclick="toggle_visibility('commentssection');">Show comments <span id=commentsnum></span></a><script>function toggle_visibility(id){var e=document.getElementById(id);if(e.style.display=='block'){e.style.display='none';document.getElementById("commenttoggle").innerText="Show comments";}else{e.style.display='block';document.getElementById("commenttoggle").innerText="Hide comments";}}</script><div id=commentssection style=display:none><hr><div id=comments></div><div class=guestbook-form><strong>Leave a comment:</strong>
+<textarea rows=5 cols=75 id=message name=message class=guestbook></textarea><br><table style=margin-bottom:0><tr><td style=padding-right:10px><label for=name>Who are you?</label><td><input id=name class=guestbook size=40><tr><td style=padding-right:10px><label for=whourl>(optional URL)</label><td><input id=email class=guestbook size=40 type=url><tr><td><input class=guestbook-button type=button id=btn value=Submit></table></div><script>var serverURL="https:\/\/guestbook.schollz.com"
+var btn=document.getElementById("btn");var guestbook=document.getElementById("comments");var firstMessage=0;function myCallback(acptlang){if(acptlang.Message!=""&&firstMessage==1){alert(acptlang.Message);firstMessage=1;}
+guestbook.innerHTML="";if(acptlang.Entries.length>0){var commentsNum=document.getElementById("commentsnum");commentsNum.innerText="("+acptlang.Entries.length+")"}
+for(var i=0;i<acptlang.Entries.length;i++){guestbook.innerHTML=guestbook.innerHTML+
+`<div class="comment">
+    <div class="entryid"> By ${acptlang.Entries[i].Name} on ${acptlang.Entries[i].DateString} in ${acptlang.Entries[i].Location}: </div>
+    <blockquote> <div class="wikitext">${acptlang.Entries[i].Message}
+    </div> </blockquote> </div>`}}
+function jsonp(){guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);}
+btn.addEventListener("click",jsonp);guestbook.innerHTML="Loading ...";var tag=document.createElement("script");var message=encodeURIComponent(document.querySelector('#message').value);var name=encodeURIComponent(document.querySelector('#name').value);var email=encodeURIComponent(document.querySelector('#email').value);tag.src=`${serverURL}/jsonp?callback=myCallback&message=${message}&name=${name}&email=${name}`;document.querySelector("head").appendChild(tag);</script></div><br></div><small>Written on <a href=/written/2018-06-10>10</a>
+<a href=/written/2018-06>June</a>
+<a href=/written/2018>2018</a>.
+Categories:
+<a href=/tags/coding/>coding</a>.</small><br><br><table border=0 width=100%><tr><td width=50% style=padding-right:.5em><table><tr><td>&laquo;<td><a href=/ipfs-enabled-personal-internet-archive/>IPFS enabled personal internet archive</a>&nbsp;</table></table></div><div class=sidebar><div class=readme><div class=wikitext><p><a href=/>Full index of entries</a><p>Subjects:
+<a href=/tags/bitcoin>bitcoin</a>&nbsp;
+<a href=/tags/books>books</a>&nbsp;
+<a href=/tags/brain>brain</a>&nbsp;
+<a href=/tags/coding>coding</a>&nbsp;
+<a href=/tags/food>food</a>&nbsp;
+<a href=/tags/golang>golang</a>&nbsp;
+<a href=/tags/ipfs>ipfs</a>&nbsp;
+<a href=/tags/painting>painting</a>&nbsp;
+<a href=/tags/protein-folding>protein-folding</a>&nbsp;
+<a href=/tags/running>running</a>&nbsp;
+<a href=/tags/science>science</a>&nbsp;
+<a href=/tags/thoughts>thoughts</a>&nbsp;
+<a href=/tags/tools>tools</a>&nbsp;<p>Github:
+<a href=https://github.com/schollz>@schollz</a><p>Twitter:
+<a href=https://twitter.com/yakczar>@yakczar</a><p align=center>* * *<p id=quoteP><div class=sidesearch style=font-size:small><form onsubmit="location.href='/search/?s='+document.getElementById('myInput').value;return false;">Search:
+<input id=myInput size=15></form></div><p><a href=/about>About</a>&nbsp;&middot;&nbsp;<a href=/index.xml>RSS feed</a></div></div></div></div></div>
